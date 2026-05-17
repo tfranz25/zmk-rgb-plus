@@ -3,7 +3,7 @@ menu "ZMK RGB Plus Custom Lighting"
 config ZMK_RGB_PLUS
     bool "Enable ZMK RGB Plus advanced lighting effects"
     default n
-    depends on ZMK_RGB_UNDERGLOW
+    select LED_STRIP
     help
       Enable custom reactive typing, heatmap, ripple, fireplace, aurora,
       and other highly advanced directional lighting effects.
