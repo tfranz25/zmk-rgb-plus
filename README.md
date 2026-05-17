@@ -75,7 +75,13 @@ CONFIG_ZMK_RGB_PLUS_FPS_BATTERY=0  # Disables animations on battery (set to 5 fo
 ---
 
 ### 3. Bind Control Keys in your Keymap (`<keyboard>.keymap`)
-Define the custom behavior and bind the actions to your key layers to control your lighting on the fly!
+First, include the module's keymap bindings header at the top of your `.keymap` file:
+
+```devicetree
+#include <dt-bindings/zmk/rgb_plus.h>
+```
+
+Then, define the custom behavior and bind the actions to your key layers to control your lighting on the fly!
 
 #### A. Declare the Behavior in Devicetree
 At the top level of your `.keymap` file (outside the `/` root or within your `behaviors` block), declare:
@@ -97,16 +103,16 @@ Map the control actions using these parameter definitions:
 
 | Binding | Action | Description |
 | :--- | :--- | :--- |
-| `&rgb_plus 0` | `EFF_NEXT` | Cycles to the next animation. |
-| `&rgb_plus 1` | `EFF_PREV` | Cycles to the previous animation. |
-| `&rgb_plus 2` | `REAC_TOG` | Toggles reactive overlay (e.g. typing ripples over ambient lighting). |
-| `&rgb_plus 3` | `SPD_INC` | Increases animation speed / wave propagation. |
-| `&rgb_plus 4` | `SPD_DEC` | Decreases animation speed. |
+| `&rgb_plus eff_next` | `EFF_NEXT` | Cycles to the next animation. |
+| `&rgb_plus eff_prev` | `EFF_PREV` | Cycles to the previous animation. |
+| `&rgb_plus reac_tog` | `REAC_TOG` | Toggles reactive overlay (e.g. typing ripples over ambient lighting). |
+| `&rgb_plus spd_inc` | `SPD_INC` | Increases animation speed / wave propagation. |
+| `&rgb_plus spd_dec` | `SPD_DEC` | Decreases animation speed. |
 
 ```devicetree
 // Example binding in a macro pad layer:
 bindings = <
-    &rgb_plus 0   &rgb_plus 1   &rgb_plus 2   &rgb_plus 3
+    &rgb_plus eff_next   &rgb_plus eff_prev   &rgb_plus reac_tog   &rgb_plus spd_inc
 >;
 ```
 

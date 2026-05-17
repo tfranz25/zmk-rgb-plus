@@ -3,13 +3,14 @@
 
 #include <zephyr/kernel.h>
 #include <zephyr/drivers/led_strip.h>
+#include <dt-bindings/zmk/rgb_plus.h>
 
 /* Behavior commands mapped to keymap cells */
-#define RGB_PLUS_CMD_EFF_NEXT 0
-#define RGB_PLUS_CMD_EFF_PREV 1
-#define RGB_PLUS_CMD_REAC_TOG 2
-#define RGB_PLUS_CMD_SPD_INC  3
-#define RGB_PLUS_CMD_SPD_DEC  4
+#define RGB_PLUS_CMD_EFF_NEXT eff_next
+#define RGB_PLUS_CMD_EFF_PREV eff_prev
+#define RGB_PLUS_CMD_REAC_TOG reac_tog
+#define RGB_PLUS_CMD_SPD_INC  spd_inc
+#define RGB_PLUS_CMD_SPD_DEC  spd_dec
 
 /* Available custom effects */
 enum zmk_rgb_plus_effect {
