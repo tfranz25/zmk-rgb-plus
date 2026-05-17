@@ -28,8 +28,8 @@
     #define LAYOUT_NODE DT_CHOSEN(zmk_physical_layout)
     #define KEY_COORD_ENTRY(node_id, prop, idx) \
         { \
-            .x = (float)DT_PHA_BY_IDX_RAW(node_id, prop, idx, 2) / 100.0f, \
-            .y = (float)DT_PHA_BY_IDX_RAW(node_id, prop, idx, 3) / 100.0f  \
+            .x = (float)DT_PHA_BY_IDX(node_id, prop, idx, x) / 100.0f, \
+            .y = (float)DT_PHA_BY_IDX(node_id, prop, idx, y) / 100.0f  \
         },
     static const struct point_2d key_positions[] = {
         DT_FOREACH_PROP_ELEM(LAYOUT_NODE, keys, KEY_COORD_ENTRY)
@@ -117,21 +117,19 @@ static void init_led_coordinates(void) {
     /* 1. If explicit LED coordinates node is defined in DT, use it */
 #if DT_HAS_COMPAT_STATUS_OKAY(zmk_rgb_plus_layout)
     #define DT_LAYOUT_NODE DT_INST(0, zmk_rgb_plus_layout)
-    #define LED_COORD_ENTRY(node_id, prop, idx) \
-        { \
-            .x = (float)DT_PHA_BY_IDX_RAW(node_id, prop, idx, 0) / 100.0f, \
-            .y = (float)DT_PHA_BY_IDX_RAW(node_id, prop, idx, 1) / 100.0f  \
-        },
-    static const struct point_2d explicit_led_coords[] = {
-        DT_FOREACH_PROP_ELEM(DT_LAYOUT_NODE, led_coordinates, LED_COORD_ENTRY)
+    #if DT_NODE_HAS_PROP(DT_LAYOUT_NODE, led_coordinates)
+    static const int32_t raw_coords[] = {
+        DT_FOREACH_PROP_ELEM(DT_LAYOUT_NODE, led_coordinates, DT_PROP_BY_IDX)
     };
-    
-    int to_copy = (ARRAY_SIZE(explicit_led_coords) < LED_COUNT) ? ARRAY_SIZE(explicit_led_coords) : LED_COUNT;
+    int num_coords = ARRAY_SIZE(raw_coords) / 2;
+    int to_copy = (num_coords < LED_COUNT) ? num_coords : LED_COUNT;
     for (int i = 0; i < to_copy; i++) {
-        led_positions[i] = explicit_led_coords[i];
+        led_positions[i].x = (float)raw_coords[2 * i] / 100.0f;
+        led_positions[i].y = (float)raw_coords[2 * i + 1] / 100.0f;
     }
     coords_initialized = true;
     return;
+    #endif
 #endif
 
     /* 2. Default fallback mapping strategies */
