@@ -61,6 +61,7 @@ static bool coords_initialized = false;
 static enum zmk_rgb_plus_effect active_effect = RGB_PLUS_EFF_AURORA;
 static bool reactive_overlays_enabled = true;
 static int speed_multiplier = 100; // default speed scale in percent
+static int brightness_multiplier = 100; // Master brightness scaling in percent
 
 /* Reactive effect track lists */
 #define MAX_RIPPLES 6
@@ -427,6 +428,15 @@ static void render_frame(void) {
         led_buffer[i] = base_color;
     }
 
+    // Scale final frame brightness
+    if (brightness_multiplier < 100) {
+        for (int i = 0; i < LED_COUNT; i++) {
+            led_buffer[i].r = (uint8_t)(((uint32_t)led_buffer[i].r * brightness_multiplier) / 100);
+            led_buffer[i].g = (uint8_t)(((uint32_t)led_buffer[i].g * brightness_multiplier) / 100);
+            led_buffer[i].b = (uint8_t)(((uint32_t)led_buffer[i].b * brightness_multiplier) / 100);
+        }
+    }
+
     led_strip_update_rgb(strip, led_buffer, LED_COUNT);
 }
 
@@ -495,6 +505,14 @@ static int on_rgb_plus_binding_pressed(struct zmk_behavior_binding *binding, str
         case RGB_PLUS_CMD_SPD_DEC:
             speed_multiplier -= 20;
             if (speed_multiplier < 20) speed_multiplier = 20;
+            break;
+        case RGB_PLUS_CMD_BRI_INC:
+            brightness_multiplier += 10;
+            if (brightness_multiplier > 100) brightness_multiplier = 100;
+            break;
+        case RGB_PLUS_CMD_BRI_DEC:
+            brightness_multiplier -= 10;
+            if (brightness_multiplier < 0) brightness_multiplier = 0;
             break;
     }
 

@@ -13,6 +13,8 @@
 #define RGB_PLUS_CMD_REAC_TOG reac_tog
 #define RGB_PLUS_CMD_SPD_INC spd_inc
 #define RGB_PLUS_CMD_SPD_DEC spd_dec
+#define RGB_PLUS_CMD_BRI_INC bri_inc
+#define RGB_PLUS_CMD_BRI_DEC bri_dec
 
 /* Available custom effects */
 enum zmk_rgb_plus_effect {

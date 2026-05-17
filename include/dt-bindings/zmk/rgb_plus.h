@@ -7,5 +7,7 @@
 #define reac_tog 2
 #define spd_inc  3
 #define spd_dec  4
+#define bri_inc  5
+#define bri_dec  6
 
 #endif /* ZMK_RGB_PLUS_BINDINGS_H */
