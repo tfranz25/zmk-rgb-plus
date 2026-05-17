@@ -3,7 +3,7 @@ description: ZMK RGB Plus custom behavior to control animations and effects from
 
 compatible: "zmk,behavior-rgb-plus"
 
-include: [behavior.yaml]
+include: one_param.yaml
 
 properties:
   "#binding-cells":
