@@ -44,4 +44,9 @@ struct key_heat {
   int64_t last_hit;
 };
 
+int zmk_rgb_plus_on(void);
+int zmk_rgb_plus_off(void);
+int zmk_rgb_plus_toggle(void);
+int zmk_rgb_plus_get_state(bool *state);
+
 #endif /* ZMK_RGB_PLUS_H */

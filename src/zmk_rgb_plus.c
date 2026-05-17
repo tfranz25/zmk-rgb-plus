@@ -56,6 +56,7 @@ static const struct gpio_dt_spec ext_power_gpio = GPIO_DT_SPEC_GET(DT_COMPAT_GET
 static struct led_rgb led_buffer[LED_COUNT];
 static struct point_2d led_positions[LED_COUNT];
 static bool coords_initialized = false;
+static bool rgb_plus_on = true;
 
 /* Active effect parameters */
 static enum zmk_rgb_plus_effect active_effect = RGB_PLUS_EFF_AURORA;
@@ -442,6 +443,9 @@ static void render_frame(void) {
 
 /* Frame scheduler callback */
 static void rgb_work_handler(struct k_work *work) {
+    if (!rgb_plus_on) {
+        return;
+    }
     bool is_usb = false;
 
 #if IS_ENABLED(CONFIG_USB_DEVICE_STACK)
@@ -536,3 +540,60 @@ BEHAVIOR_DT_INST_DEFINE(0,
                         POST_KERNEL,
                         CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
                         &rgb_plus_behavior_api);
+
+int zmk_rgb_plus_on(void) {
+    if (rgb_plus_on) {
+        return 0;
+    }
+    rgb_plus_on = true;
+
+#if DT_HAS_COMPAT_STATUS_OKAY(zmk_ext_power_generic)
+    if (gpio_is_ready_dt(&ext_power_gpio)) {
+        gpio_pin_set_dt(&ext_power_gpio, 1);
+    }
+#endif
+
+    k_work_reschedule(&rgb_work, K_NO_WAIT);
+    return 0;
+}
+
+int zmk_rgb_plus_off(void) {
+    if (!rgb_plus_on) {
+        return 0;
+    }
+    rgb_plus_on = false;
+
+    const struct device *strip = DEVICE_DT_GET(STRIP_NODE);
+    if (device_is_ready(strip)) {
+        for (int i = 0; i < LED_COUNT; i++) {
+            led_buffer[i].r = 0;
+            led_buffer[i].g = 0;
+            led_buffer[i].b = 0;
+        }
+        led_strip_update_rgb(strip, led_buffer, LED_COUNT);
+    }
+
+#if DT_HAS_COMPAT_STATUS_OKAY(zmk_ext_power_generic)
+    if (gpio_is_ready_dt(&ext_power_gpio)) {
+        gpio_pin_set_dt(&ext_power_gpio, 0);
+    }
+#endif
+
+    return 0;
+}
+
+int zmk_rgb_plus_toggle(void) {
+    if (rgb_plus_on) {
+        return zmk_rgb_plus_off();
+    } else {
+        return zmk_rgb_plus_on();
+    }
+}
+
+int zmk_rgb_plus_get_state(bool *state) {
+    if (state == NULL) {
+        return -EINVAL;
+    }
+    *state = rgb_plus_on;
+    return 0;
+}
