@@ -19,7 +19,7 @@ This ZMK module was built with the assistance of AI tools. The code has been rev
 *   ✨ **Starry Twinkle**: Independent stars in warm gold or cool white/blue that twinkle and fade across the board.
 *   🌡️ **Typing Heatmap**: Tracks key hit frequency and translates "hot" spots into temperature color ramps across adjacent LEDs.
 *   🌈 **Directional Rainbow Wave**: A sweeping hue cycle that travels along a customizable 2D angle (e.g. 45 degrees) across the board.
-*   🔋 **Smart Power Saving**: An integrated battery saver that monitors USB power status and automatically drops the animation frame rate (e.g. to 0 FPS / sleep) when running wireless to preserve battery life.
+*   🔋 **Smart Power Saving**: An integrated battery saver that monitors USB power status and automatically drops the animation frame rate (e.g. to 0 FPS / sleep) when running wireless to preserve battery life. **Integrates natively with the [zmk-usb-rgb-idle-bypass](https://github.com/tfranz25/zmk-usb-rgb-idle-bypass) module to keep lighting active indefinitely when connected via USB, while cleanly powering off LEDs and fully suspending animation threads when idle on battery.**
 
 ---
 
@@ -117,6 +117,11 @@ bindings = <
     &rgb_plus eff_next   &rgb_plus eff_prev   &rgb_plus reac_tog   &rgb_plus spd_inc
 >;
 ```
+
+#### C. Integration with `zmk-usb-rgb-idle-bypass`
+If you want to keep your advanced animations active indefinitely while connected via USB, but still want them to turn off automatically during idle states when running on battery (Bluetooth), you can pull in the [zmk-usb-rgb-idle-bypass](https://github.com/tfranz25/zmk-usb-rgb-idle-bypass) module. 
+
+`zmk-rgb-plus` exports custom state control APIs (`zmk_rgb_plus_on()`, `zmk_rgb_plus_off()`) that are automatically detected and utilized by the idle bypass module to suspend the rendering engine and save battery power seamlessly!
 
 ---
 
