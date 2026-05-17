@@ -3,6 +3,7 @@
 #include <zephyr/kernel.h>
 #include <zephyr/device.h>
 #include <zephyr/drivers/led_strip.h>
+#include <zephyr/drivers/gpio.h>
 #include <zephyr/usb/usb_device.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
@@ -21,6 +22,10 @@
   #define LED_COUNT DT_PROP(STRIP_NODE, chain_length)
 #else
   #define LED_COUNT 20
+#endif
+
+#if DT_HAS_COMPAT_STATUS_OKAY(zmk_ext_power_generic)
+static const struct gpio_dt_spec ext_power_gpio = GPIO_DT_SPEC_GET(DT_COMPAT_GET_ANY_STATUS_OKAY(zmk_ext_power_generic), control_gpios);
 #endif
 
 /* Retrieve physical layout coordinates at compile-time */
@@ -451,6 +456,11 @@ static void rgb_work_handler(struct k_work *work) {
 
 /* Initialization */
 static int zmk_rgb_plus_init(void) {
+#if DT_HAS_COMPAT_STATUS_OKAY(zmk_ext_power_generic)
+    if (gpio_is_ready_dt(&ext_power_gpio)) {
+        gpio_pin_configure_dt(&ext_power_gpio, GPIO_OUTPUT_ACTIVE);
+    }
+#endif
     init_led_coordinates();
     k_work_init_delayable(&rgb_work, rgb_work_handler);
     k_work_reschedule(&rgb_work, K_MSEC(100));
