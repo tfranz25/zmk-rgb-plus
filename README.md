@@ -1,45 +1,44 @@
-# ZMK RGB Plus: Reusable, Layout-Agnostic Advanced RGB Lighting
+# 🌟 ZMK RGB Plus
 
-`zmk-rgb-plus` is a standalone, high-performance, and layout-independent RGB animation module for ZMK keyboards. 
+A Standalone, Layout-Agnostic Advanced RGB Lighting Module for ZMK Keyboards.
 
-Rather than hardcoding layout grids, `zmk-rgb-plus` automatically parses your keyboard's key coordinates from your Devicetree at compile-time and uses spatial interpolation to map reactive splashes, directional rainbow sweeps, and fading trails directly to your board's geometry!
-
----
-
-## Features
-1. **Typing Splash/Ripples**: Waves expand radially outward from key press coordinates.
-2. **Aurora Flow**: Shifting diagonal waves of green, violet, and deep indigo.
-3. **Fireplace Flickering**: Warm embers with organic micro-flickers.
-4. **Starry Twinkle**: Randomly sparking gold and cyan stars fading across the board.
-5. **Typing Heatmap**: Tracks keys by hit frequency and spreads a temperature gradient.
-6. **Smart Battery Saver**: Checks USB status and drops to 0 FPS (deep sleep) on battery.
+`zmk-rgb-plus` is an out-of-tree ZMK module that brings highly interactive, reactive, and organic lighting animations to your keyboard. Unlike traditional ZMK underglow animations which are simple global or linear cycles, `zmk-rgb-plus` automatically queries your physical keyboard geometry at compile-time, allowing you to run ripples, typing heatmaps, and spatial rainbows perfectly aligned to your keyboard's key positions!
 
 ---
 
-## Step 1: Push this Module to GitHub
-Since you build your firmware via GitHub Actions, the compiler needs to fetch this module from GitHub. Follow these quick terminal steps to initialize and push:
-
-```bash
-# Navigate to the module directory
-cd /home/tobias/dev/zmk-rgb-plus
-
-# Initialize git repository
-git init -b main
-
-# Add and commit the files
-git add .
-git commit -m "Initialize zmk-rgb-plus module"
-
-# Create a new repository on your GitHub (named 'zmk-rgb-plus')
-# Then add the remote and push (replace tfranz25 with your actual GitHub username):
-git remote add origin https://github.com/tfranz25/zmk-rgb-plus.git
-git push -u origin main
-```
+🤖 AI Disclosure
+This ZMK module was built with the assistance of AI tools. The code has been reviewed, tweaked, and tested on TibbyPad, but as with all AI-assisted firmware, please review the configurations before flashing it to your device.
 
 ---
 
-## Step 2: Add the Module to your Keyboard's `west.yml`
-Open your `tibbypad-module`'s `config/west.yml` and add `zmk-rgb-plus` to the `projects` list (pointing to your new GitHub repository):
+## ✨ Features
+
+*   🌊 **Reactive Typing Splash/Ripples**: Waves expand radially outward from key press coordinates. Multiple key presses spawn compounding waves that blend together seamlessly.
+*   🔥 **Fireplace Flickering**: A cozy campfire animation. LEDs randomly flicker between hot golden yellow, glowing orange, and deep charcoal red.
+*   🌌 **Aurora Borealis Flow**: A slow, wavy, organic blend of shifting greens, cyans, and deep violet/indigo.
+*   ✨ **Starry Twinkle**: Independent stars in warm gold or cool white/blue that twinkle and fade across the board.
+*   🌡️ **Typing Heatmap**: Tracks key hit frequency and translates "hot" spots into temperature color ramps across adjacent LEDs.
+*   🌈 **Directional Rainbow Wave**: A sweeping hue cycle that travels along a customizable 2D angle (e.g. 45 degrees) across the board.
+*   🔋 **Smart Power Saving**: An integrated battery saver that monitors USB power status and automatically drops the animation frame rate (e.g. to 0 FPS / sleep) when running wireless to preserve battery life.
+
+---
+
+## ⚙️ How It Works
+
+1.  **Compile-Time Coordinate Parsing**: Using ZMK's layout system (`DT_CHOSEN(zmk_physical_layout)`), the module reads the raw `(X, Y)` coordinate of every key at build time.
+2.  **Underglow Spatial Assignment**:
+    *   **Per-Key Backlight**: If your LED strip length matches your key count, LEDs map 1-to-1 to your key coordinates.
+    *   **Underglow Strips**: If your LED count differs (e.g. a macro pad with bottom-facing edge strips), the module automatically calculates your layout's physical boundary and clockwise distributes the LEDs uniformly around the outer perimeter!
+    *   **Manual Coordinates**: You can explicitly override LED positions in your Devicetree overlay for advanced setups.
+
+---
+
+## 🚀 Installation
+
+To incorporate this module into your ZMK config, complete these three simple steps:
+
+### 1. Update `config/west.yml`
+Add the module to your ZMK manifest as a project:
 
 ```yaml
 manifest:
@@ -48,7 +47,7 @@ manifest:
       remote: zmkfirmware
       revision: main
       import: app/west.yml
-    # Add your brand-new module here:
+    # Add ZMK RGB Plus:
     - name: zmk-rgb-plus
       url: https://github.com/tfranz25/zmk-rgb-plus
       revision: main
@@ -56,27 +55,30 @@ manifest:
 
 ---
 
-## Step 3: Enable the Module in Kconfig
-Add the following switches to your keyboard's `.conf` file (e.g. `tibbypad.conf`):
+### 2. Enable in Kconfig (`<keyboard>.conf`)
+Enable the custom module and configure its frame rates, battery saving, and ripple dynamics:
 
 ```ini
-# Core ZMK RGB (required)
+# Core ZMK underglow configuration
+CONFIG_ZMK_EXT_POWER=y
 CONFIG_ZMK_RGB_UNDERGLOW=y
 
 # Enable ZMK RGB Plus
 CONFIG_ZMK_RGB_PLUS=y
+
+# Power Management
 CONFIG_ZMK_RGB_PLUS_BATTERY_SAVER=y
 CONFIG_ZMK_RGB_PLUS_FPS_USB=40
-CONFIG_ZMK_RGB_PLUS_FPS_BATTERY=0  # Disables animations entirely on battery to save power
+CONFIG_ZMK_RGB_PLUS_FPS_BATTERY=0  # Disables animations on battery (set to 5 for slow-mode)
 ```
 
 ---
 
-## Step 4: Map Controls in your Keymap (`tibbypad.keymap`)
-To let you control your advanced animations on the fly, define the custom behavior in your keymap overlay:
+### 3. Bind Control Keys in your Keymap (`<keyboard>.keymap`)
+Define the custom behavior and bind the actions to your key layers to control your lighting on the fly!
 
-### 1. Declare the Behavior in Devicetree
-At the top level of your `tibbypad.keymap` (outside the `/` root or within the root), define the behavior node:
+#### A. Declare the Behavior in Devicetree
+At the top level of your `.keymap` file (outside the `/` root or within your `behaviors` block), declare:
 
 ```devicetree
 / {
@@ -90,16 +92,57 @@ At the top level of your `tibbypad.keymap` (outside the `/` root or within the r
 };
 ```
 
-### 2. Bind the Keys
-Add these keycodes into your layout layers to cycle effects and adjust animation speed:
+#### B. Bind the Keys in your Layout
+Map the control actions using these parameter definitions:
+
+| Binding | Action | Description |
+| :--- | :--- | :--- |
+| `&rgb_plus 0` | `EFF_NEXT` | Cycles to the next animation. |
+| `&rgb_plus 1` | `EFF_PREV` | Cycles to the previous animation. |
+| `&rgb_plus 2` | `REAC_TOG` | Toggles reactive overlay (e.g. typing ripples over ambient lighting). |
+| `&rgb_plus 3` | `SPD_INC` | Increases animation speed / wave propagation. |
+| `&rgb_plus 4` | `SPD_DEC` | Decreases animation speed. |
 
 ```devicetree
-// Example bindings:
+// Example binding in a macro pad layer:
 bindings = <
-    &rgb_plus 0   // Next Effect (Aurora -> Fire -> Starry -> Rainbow -> Ripple -> Heatmap)
-    &rgb_plus 1   // Previous Effect
-    &rgb_plus 2   // Toggle reactive overlay
-    &rgb_plus 3   // Speed Up animations
-    &rgb_plus 4   // Slow Down animations
+    &rgb_plus 0   &rgb_plus 1   &rgb_plus 2   &rgb_plus 3
 >;
 ```
+
+---
+
+## 🛠️ Advanced Customization
+
+### Explicit LED Coordinates
+By default, the module distributes LEDs evenly around the outer perimeter of your key layout. If you want absolute precision, you can specify exactly where your LEDs are positioned in your `<keyboard>.overlay` file using the `zmk,rgb-plus-layout` compatible compatible node:
+
+```devicetree
+/ {
+    rgb_plus_config {
+        compatible = "zmk,rgb-plus-layout";
+        
+        // Define X, Y coordinates in grid units (e.g. 100 = 1U key width) for each LED
+        led-coordinates = 
+            <0   0>, <100   0>, <200   0>, <300   0>, // Top Row underglow spots
+            <0 100>, <100 100>, <200 100>, <300 100>  // Next Row underglow spots
+            /* ... map all LEDs in your chain length ... */
+            ;
+    };
+};
+```
+
+---
+
+## 📊 Kconfig Options Reference
+
+| Option | Type | Default | Description |
+| :--- | :--- | :--- | :--- |
+| `CONFIG_ZMK_RGB_PLUS` | boolean | `n` | Master switch to enable advanced effects. |
+| `CONFIG_ZMK_RGB_PLUS_BATTERY_SAVER` | boolean | `y` | Enables framerate down-scaling on battery. |
+| `CONFIG_ZMK_RGB_PLUS_FPS_USB` | integer | `40` | Framerate (FPS) when powered via USB (10-100). |
+| `CONFIG_ZMK_RGB_PLUS_FPS_BATTERY` | integer | `0` | Framerate (FPS) on battery. Set to `0` to deep-sleep. |
+| `CONFIG_ZMK_RGB_PLUS_RIPPLE_SPEED` | integer | `500` | Expansion velocity of key waves (hundredths of grid units/sec). |
+| `CONFIG_ZMK_RGB_PLUS_RIPPLE_LIFETIME` | integer | `800` | Ripple decay duration (in milliseconds). |
+| `CONFIG_ZMK_RGB_PLUS_HEATMAP_COOLING` | integer | `60` | Thermal cooling rate percent per second (1-100). |
+| `CONFIG_ZMK_RGB_PLUS_DEFAULT_BRIGHTNESS` | integer | `80` | Default brightness scaling percentage (5-100). |
