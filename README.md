@@ -75,10 +75,11 @@ CONFIG_ZMK_RGB_PLUS_FPS_BATTERY=0  # Disables animations on battery (set to 5 fo
 ---
 
 ### 3. Bind Control Keys in your Keymap (`<keyboard>.keymap`)
-First, include the module's keymap bindings header at the top of your `.keymap` file:
+First, include the module's keymap bindings header at the top of your `.keymap` file. If your board has a physical power gate/regulator (like the Xiao BLE), you will also want to include ZMK's external power header:
 
 ```devicetree
 #include <dt-bindings/zmk/rgb_plus.h>
+#include <dt-bindings/zmk/ext_power.h>
 ```
 
 Then, define the custom behavior and bind the actions to your key layers to control your lighting on the fly!
@@ -117,6 +118,15 @@ bindings = <
     &rgb_plus eff_next   &rgb_plus eff_prev   &rgb_plus reac_tog   &rgb_plus spd_inc
 >;
 ```
+
+#### C. External Power Control (Recommended)
+If your keyboard hardware includes a VCC power gate or regulator to cut power to the LED strip completely when sleeping/idle (e.g. Xiao BLE, TibbyPad), you must enable ZMK's external power library (`CONFIG_ZMK_EXT_POWER=y`) in your `.conf` file and bind these control keys:
+
+| Binding | Action | Description |
+| :--- | :--- | :--- |
+| `&ext_power EP_ON` | `EP_ON` | Turns on the physical hardware VCC gate to power the LED strip. |
+| `&ext_power EP_OFF` | `EP_OFF` | Turns off the physical hardware VCC gate to save max power. |
+| `&ext_power EP_TOG` | `EP_TOG` | Toggles the physical hardware VCC gate power. |
 
 #### C. Integration with `zmk-usb-rgb-idle-bypass`
 If you want to keep your advanced animations active indefinitely while connected via USB, but still want them to turn off automatically during idle states when running on battery (Bluetooth), you can pull in the [zmk-usb-rgb-idle-bypass](https://github.com/tfranz25/zmk-usb-rgb-idle-bypass) module. 
