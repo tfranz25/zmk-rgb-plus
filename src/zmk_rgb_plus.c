@@ -600,7 +600,7 @@ int zmk_rgb_plus_get_state(bool *state) {
     return 0;
 }
 
-#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
+#if IS_ENABLED(CONFIG_ZMK_RGB_PLUS_AUTO_OFF_IDLE) && !IS_ENABLED(CONFIG_ZMK_BT_IDLE_ONLY)
 static int rgb_plus_activity_listener(const zmk_event_t *eh) {
     const struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
     if (ev == NULL) {

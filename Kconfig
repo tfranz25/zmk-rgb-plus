@@ -18,6 +18,13 @@ config ZMK_RGB_PLUS_BATTERY_SAVER
       Automatically drops the animation frame rate or turns off animations
       entirely when the keyboard is operating on battery power to save charge.
 
+config ZMK_RGB_PLUS_AUTO_OFF_IDLE
+    bool "Auto-off on idle"
+    default y
+    help
+      Automatically turn off the RGB lights and suspend rendering when
+      the keyboard enters an idle state.
+
 config ZMK_RGB_PLUS_FPS_USB
     int "Frame rate on USB power (FPS)"
     default 40
