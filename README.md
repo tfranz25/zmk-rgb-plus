@@ -108,6 +108,8 @@ Map the control actions using these parameter definitions:
 | `&rgb_plus reac_tog` | `REAC_TOG` | Toggles reactive overlay (e.g. typing ripples over ambient lighting). |
 | `&rgb_plus spd_inc` | `SPD_INC` | Increases animation speed / wave propagation. |
 | `&rgb_plus spd_dec` | `SPD_DEC` | Decreases animation speed. |
+| `&rgb_plus bri_inc` | `BRI_INC` | Increases master brightness (steps of 10%). |
+| `&rgb_plus bri_dec` | `BRI_DEC` | Decreases master brightness (steps of 10%). |
 
 ```devicetree
 // Example binding in a macro pad layer:
