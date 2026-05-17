@@ -1,0 +1,66 @@
+menu "ZMK RGB Plus Custom Lighting"
+
+config ZMK_RGB_PLUS
+    bool "Enable ZMK RGB Plus advanced lighting effects"
+    default n
+    depends on ZMK_RGB_UNDERGLOW
+    help
+      Enable custom reactive typing, heatmap, ripple, fireplace, aurora,
+      and other highly advanced directional lighting effects.
+
+if ZMK_RGB_PLUS
+
+config ZMK_RGB_PLUS_BATTERY_SAVER
+    bool "Enable battery saver mode"
+    default y
+    help
+      Automatically drops the animation frame rate or turns off animations
+      entirely when the keyboard is operating on battery power to save charge.
+
+config ZMK_RGB_PLUS_FPS_USB
+    int "Frame rate on USB power (FPS)"
+    default 40
+    range 10 100
+    help
+      The rendering frame rate when connected to USB power. Higher values
+      provide smoother animations (e.g., 40-60 FPS).
+
+config ZMK_RGB_PLUS_FPS_BATTERY
+    int "Frame rate on Battery power (FPS)"
+    default 0
+    range 0 30
+    help
+      The rendering frame rate when running on battery. Set to 0 to disable
+      animations entirely and save maximum power when wireless.
+
+config ZMK_RGB_PLUS_RIPPLE_SPEED
+    int "Ripple propagation speed (hundredths of grid units/sec)"
+    default 500
+    help
+      Controls how fast the splash ripple expands across the keyboard.
+      A grid unit matches key sizes (e.g. 100 = 1 key width).
+
+config ZMK_RGB_PLUS_RIPPLE_LIFETIME
+    int "Ripple lifetime (milliseconds)"
+    default 800
+    help
+      The duration in milliseconds that a keypress ripple remains active.
+
+config ZMK_RGB_PLUS_HEATMAP_COOLING
+    int "Heatmap cooling rate (percent per second)"
+    default 60
+    range 1 100
+    help
+      How quickly typed keys cool down back to the background color.
+      Higher values mean faster cooling.
+
+config ZMK_RGB_PLUS_DEFAULT_BRIGHTNESS
+    int "Default brightness scaling percentage"
+    default 80
+    range 5 100
+    help
+      Sets the default maximum brightness scaling (out of 100) for custom animations.
+
+endif # ZMK_RGB_PLUS
+
+endmenu

@@ -1,0 +1,4 @@
+name: zmk-rgb-plus
+build:
+  cmake: zephyr
+  kconfig: zephyr/Kconfig

@@ -1,0 +1,5 @@
+if(CONFIG_ZMK_RGB_PLUS)
+  zephyr_library()
+  zephyr_library_sources(src/zmk_rgb_plus.c)
+  zephyr_library_include_directories(include)
+endif()

@@ -1,0 +1,17 @@
+# dts/bindings/zmk,behavior-rgb-plus.yaml
+description: ZMK RGB Plus custom behavior to control animations and effects from your keymap.
+
+compatible: "zmk,behavior-rgb-plus"
+
+include: [behavior.yaml]
+
+properties:
+  "#binding-cells":
+    const: 1
+    description: |
+      The command parameter:
+      0: Next Effect
+      1: Previous Effect
+      2: Toggle Reactive overlay (e.g. layers)
+      3: Increase Speed
+      4: Decrease Speed

@@ -1,0 +1,12 @@
+# dts/bindings/zmk,rgb-plus-layout.yaml
+description: Custom LED coordinate schema for layout-agnostic spatial RGB animations.
+
+compatible: "zmk,rgb-plus-layout"
+
+properties:
+  led-coordinates:
+    type: array
+    required: true
+    description: |
+      An array of (X, Y) coordinate pairs mapping each underglow LED
+      index to physical grid coordinates (e.g. <x y> in hundredths of U).
