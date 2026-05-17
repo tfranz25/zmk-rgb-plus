@@ -1,4 +1,7 @@
 name: zmk-rgb-plus
 build:
-  cmake: zephyr
-  kconfig: zephyr/Kconfig
+  cmake: .
+  kconfig: Kconfig
+  settings:
+    board_root: .
+    dts_root: .
