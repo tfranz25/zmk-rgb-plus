@@ -7,6 +7,8 @@
 #include <zephyr/usb/usb_device.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
+#include <zmk/events/activity_state_changed.h>
+#include <zmk/activity.h>
 #include <zmk/usb.h>
 #include <zmk/behavior.h>
 #include <drivers/behavior.h>
@@ -597,3 +599,30 @@ int zmk_rgb_plus_get_state(bool *state) {
     *state = rgb_plus_on;
     return 0;
 }
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW_AUTO_OFF_IDLE)
+static int rgb_plus_activity_listener(const zmk_event_t *eh) {
+    const struct zmk_activity_state_changed *ev = as_zmk_activity_state_changed(eh);
+    if (ev == NULL) {
+        return ZMK_EV_EVENT_BUBBLE;
+    }
+
+    static bool was_off_before_sleep = false;
+
+    if (ev->state == ZMK_ACTIVITY_ACTIVE) {
+        if (!was_off_before_sleep) {
+            zmk_rgb_plus_on();
+        }
+    } else if (ev->state == ZMK_ACTIVITY_IDLE) {
+        bool current_state = true;
+        zmk_rgb_plus_get_state(&current_state);
+        was_off_before_sleep = !current_state;
+        zmk_rgb_plus_off();
+    }
+
+    return ZMK_EV_EVENT_BUBBLE;
+}
+
+ZMK_LISTENER(rgb_plus_activity, rgb_plus_activity_listener);
+ZMK_SUBSCRIPTION(rgb_plus_activity, zmk_activity_state_changed);
+#endif
