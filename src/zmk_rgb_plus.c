@@ -200,8 +200,8 @@ static int keypress_listener(const zmk_event_t *eh) {
     /* 1. Add key heatmap triggers */
     if (ev->state) { // Key down
         heatmap[ev->position].heat += 0.35f;
-        if (heatmap[ev->position].heat > 1.0f) {
-            heatmap[ev->position].heat = 1.0f;
+        if (heatmap[ev->position].heat > 2.0f) {
+            heatmap[ev->position].heat = 2.0f;
         }
         heatmap[ev->position].last_hit = now;
 
@@ -388,18 +388,16 @@ static void render_frame(void) {
                 base_color = render_rainbow(i, now);
                 break;
             case RGB_PLUS_EFF_HEATMAP: {
-                // Find nearby keys to average spatial heatmap
-                float accum_heat = 0.0f;
-                float total_weight = 0.0f;
+                // Sum the localized Gaussian-weighted heat contributions
+                float led_heat = 0.0f;
                 
                 for (int k = 0; k < KEY_COUNT; k++) {
                     float dist = dist_2d(led_positions[i].x, led_positions[i].y, key_positions[k].x, key_positions[k].y);
-                    float weight = 1.0f / (dist + 0.1f);
-                    accum_heat += heatmap[k].heat * weight;
-                    total_weight += weight;
+                    // Gaussian decay with sigma = 1.0 key unit (2 * sigma^2 = 2.0)
+                    float weight = expf(-(dist * dist) / 2.0f);
+                    led_heat += heatmap[k].heat * weight;
                 }
                 
-                float led_heat = accum_heat / total_weight;
                 if (led_heat > 1.0f) led_heat = 1.0f;
 
                 // Color ramp: Cold (blue/purple) -> Medium (cyan/green) -> Hot (white-hot red)
