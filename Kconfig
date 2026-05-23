@@ -11,6 +11,15 @@ config ZMK_RGB_PLUS
 
 if ZMK_RGB_PLUS
 
+config ZMK_RGB_PLUS_SETTINGS
+    bool "Persist RGB Plus state across reboots"
+    default y
+    select SETTINGS
+    help
+      Saves the active effect, speed, brightness, and reactive toggle state
+      to NVS flash. State is automatically restored on every boot.
+      Uses a 3-second debounce before writing to protect flash endurance.
+
 config ZMK_RGB_PLUS_BATTERY_SAVER
     bool "Enable battery saver mode"
     default y

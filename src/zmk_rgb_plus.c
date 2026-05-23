@@ -13,6 +13,9 @@
 #include <zmk/behavior.h>
 #include <drivers/behavior.h>
 #include <math.h>
+#if IS_ENABLED(CONFIG_ZMK_RGB_PLUS_SETTINGS)
+#include <zephyr/settings/settings.h>
+#endif
 
 #include "zmk_rgb_plus.h"
 
@@ -65,6 +68,73 @@ static enum zmk_rgb_plus_effect active_effect = RGB_PLUS_EFF_AURORA;
 static bool reactive_overlays_enabled = true;
 static int speed_multiplier = 100; // default speed scale in percent
 static int brightness_multiplier = 100; // Master brightness scaling in percent
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_PLUS_SETTINGS)
+/* Settings persistence --------------------------------------------------- */
+#define RGB_PLUS_SETTINGS_KEY "rgb_plus/state"
+
+typedef struct {
+    uint8_t effect;     /* enum zmk_rgb_plus_effect              */
+    uint8_t reactive;   /* bool packed into uint8                */
+    uint8_t brightness; /* 0-100                                 */
+    uint8_t speed;      /* speed_multiplier / 10  (range 2-30)   */
+} rgb_plus_settings_t;
+
+static void rgb_plus_save_work_handler(struct k_work *work);
+static K_WORK_DELAYABLE_DEFINE(save_work, rgb_plus_save_work_handler);
+
+static int rgb_plus_settings_set(const char *key, size_t len,
+                                  settings_read_cb read_cb, void *cb_arg) {
+    if (strcmp(key, "state") != 0) {
+        return -ENOENT;
+    }
+    rgb_plus_settings_t s = {0};
+    ssize_t rc = read_cb(cb_arg, &s, sizeof(s));
+    if (rc < 0) {
+        return (int)rc;
+    }
+    if (s.effect < RGB_PLUS_EFF_COUNT) {
+        active_effect = (enum zmk_rgb_plus_effect)s.effect;
+    }
+    reactive_overlays_enabled = (s.reactive != 0);
+    if (s.brightness <= 100) {
+        brightness_multiplier = s.brightness;
+    }
+    int restored_speed = (int)s.speed * 10;
+    if (restored_speed >= 20 && restored_speed <= 300) {
+        speed_multiplier = restored_speed;
+    }
+    return 0;
+}
+
+static int rgb_plus_settings_export(int (*cb)(const char *key,
+                                               const void *data,
+                                               size_t data_len)) {
+    rgb_plus_settings_t s = {
+        .effect     = (uint8_t)active_effect,
+        .reactive   = reactive_overlays_enabled ? 1u : 0u,
+        .brightness = (uint8_t)brightness_multiplier,
+        .speed      = (uint8_t)(speed_multiplier / 10),
+    };
+    return cb(RGB_PLUS_SETTINGS_KEY, &s, sizeof(s));
+}
+
+SETTINGS_STATIC_HANDLER_DEFINE(rgb_plus, "rgb_plus", NULL,
+                                rgb_plus_settings_set, NULL,
+                                rgb_plus_settings_export);
+
+static void rgb_plus_save_work_handler(struct k_work *work) {
+    settings_save_one(RGB_PLUS_SETTINGS_KEY,
+                      &(rgb_plus_settings_t){
+                          .effect     = (uint8_t)active_effect,
+                          .reactive   = reactive_overlays_enabled ? 1u : 0u,
+                          .brightness = (uint8_t)brightness_multiplier,
+                          .speed      = (uint8_t)(speed_multiplier / 10),
+                      },
+                      sizeof(rgb_plus_settings_t));
+}
+/* End settings ------------------------------------------------------------ */
+#endif /* CONFIG_ZMK_RGB_PLUS_SETTINGS */
 
 /* Reactive effect track lists */
 #define MAX_RIPPLES 6
@@ -475,6 +545,12 @@ static int zmk_rgb_plus_init(void) {
         gpio_pin_configure_dt(&ext_power_gpio, GPIO_OUTPUT_ACTIVE);
     }
 #endif
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_PLUS_SETTINGS)
+    settings_subsys_init();
+    settings_load_subtree("rgb_plus");
+#endif
+
     init_led_coordinates();
     k_work_init_delayable(&rgb_work, rgb_work_handler);
     k_work_reschedule(&rgb_work, K_MSEC(100));
@@ -519,6 +595,11 @@ static int on_rgb_plus_binding_pressed(struct zmk_behavior_binding *binding, str
             if (brightness_multiplier < 0) brightness_multiplier = 0;
             break;
     }
+
+#if IS_ENABLED(CONFIG_ZMK_RGB_PLUS_SETTINGS)
+    /* Schedule a debounced write — resets the timer on rapid presses */
+    k_work_reschedule(&save_work, K_SECONDS(3));
+#endif
 
     return ZMK_BEHAVIOR_OPAQUE;
 }
