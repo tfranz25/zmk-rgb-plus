@@ -65,8 +65,8 @@ config ZMK_RGB_PLUS_RIPPLE_LIFETIME
 
 config ZMK_RGB_PLUS_HEATMAP_COOLING
     int "Heatmap cooling rate (percent per second)"
-    default 60
-    range 1 100
+    default 120
+    range 1 200
     help
       How quickly typed keys cool down back to the background color.
       Higher values mean faster cooling.

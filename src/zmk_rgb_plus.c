@@ -472,7 +472,7 @@ static void render_frame(void) {
 
                 // Color ramp: Cold (blue/purple) -> Medium (cyan/green) -> Hot (white-hot red)
                 float hue = 250.0f - (led_heat * 250.0f); // scales 250 (blue) down to 0 (red)
-                float sat = 1.0f - (led_heat * 0.4f); // turns lighter white at extreme hot
+                float sat = 1.0f;
                 float max_v = (float)CONFIG_ZMK_RGB_PLUS_DEFAULT_BRIGHTNESS / 100.0f;
                 float val = max_v * (0.15f + led_heat * 0.85f);
 
