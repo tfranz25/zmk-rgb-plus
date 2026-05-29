@@ -358,9 +358,13 @@ static struct led_rgb render_star(int i, int64_t time_ms) {
         brightness = max_v * (pulse - 0.65f) / 0.35f;
     }
 
-    // Stars shift between warm gold (hue 40) and cool white/blue (hue 210)
+    // Stars shift between neutral white (hue 42, low sat) and cool white/blue (hue 205, mid sat)
     float hue = (seed % 2 == 0) ? 42.0f : 205.0f;
-    if (hue == 205.0f) sat = 0.4f; // cool starry white
+    if (hue == 205.0f) {
+        sat = 0.4f; // cool starry white
+    } else {
+        sat = 0.15f; // neutral white
+    }
 
     return hsv_to_rgb(hue, sat, brightness);
 }
@@ -388,6 +392,13 @@ static void apply_reactive_overlays(int i, struct led_rgb *rgb, int64_t time_ms)
 
     float max_lifetime = (float)CONFIG_ZMK_RGB_PLUS_RIPPLE_LIFETIME; 
     float velocity = ((float)CONFIG_ZMK_RGB_PLUS_RIPPLE_SPEED / 100.0f) / 1000.0f; // grid units per ms
+    if (velocity > 0.0f) {
+        float max_radius = (float)CONFIG_ZMK_RGB_PLUS_RIPPLE_MAX_RADIUS / 100.0f;
+        float computed_lifetime = max_radius / velocity;
+        if (computed_lifetime < max_lifetime) {
+            max_lifetime = computed_lifetime;
+        }
+    }
     float ripple_width = 0.5f;
 
     float ripple_brightness_accumulation = 0.0f;

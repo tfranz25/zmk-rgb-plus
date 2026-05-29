@@ -45,6 +45,14 @@ config ZMK_RGB_PLUS_RIPPLE_LIFETIME
     default 800
     help
       The duration in milliseconds that a keypress ripple remains active.
+      Note: if CONFIG_ZMK_RGB_PLUS_RIPPLE_MAX_RADIUS is set, it will limit the ripple expansion distance.
+
+config ZMK_RGB_PLUS_RIPPLE_MAX_RADIUS
+    int "Ripple maximum radius (hundredths of grid units)"
+    default 300
+    help
+      The maximum distance (radius) in hundredths of grid units that a keypress
+      ripple can expand before fully fading out (e.g. 300 = 3 keys).
 
 config ZMK_RGB_PLUS_HEATMAP_COOLING
     int "Heatmap cooling rate (percent per second)"

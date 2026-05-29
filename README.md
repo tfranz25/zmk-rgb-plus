@@ -17,7 +17,7 @@ This ZMK module was built with the assistance of AI tools. The code has been rev
 *   🌊 **Reactive Typing Splash/Ripples**: Waves expand radially outward from key press coordinates. Multiple key presses spawn compounding waves that blend together seamlessly.
 *   🔥 **Fireplace Flickering**: A cozy campfire animation. LEDs randomly flicker between hot golden yellow, glowing orange, and deep charcoal red.
 *   🌌 **Aurora Borealis Flow**: A slow, wavy, organic blend of shifting greens, cyans, and deep violet/indigo.
-*   ✨ **Starry Twinkle**: Independent stars in warm gold or cool white/blue that twinkle and fade across the board.
+*   ✨ **Starry Twinkle**: Independent stars in neutral white or cool white/blue that twinkle and fade across the board.
 *   🌡️ **Typing Heatmap**: Tracks key hit frequency and translates "hot" spots into temperature color ramps across adjacent LEDs.
 *   🌈 **Directional Rainbow Wave**: A sweeping hue cycle that travels along a customizable 2D angle (e.g. 45 degrees) across the board.
 *   🔋 **Smart Power Saving**: An integrated battery saver that monitors USB power status and automatically drops the animation frame rate (e.g. to 0 FPS / sleep) when running wireless to preserve battery life. **Integrates natively with the [zmk-usb-rgb-idle-bypass](https://github.com/tfranz25/zmk-usb-rgb-idle-bypass) module to keep lighting active indefinitely when connected via USB, while cleanly powering off LEDs and fully suspending animation threads when idle on battery.**
@@ -73,8 +73,9 @@ CONFIG_ZMK_RGB_PLUS_FPS_USB=40
 CONFIG_ZMK_RGB_PLUS_FPS_BATTERY=0  # Disables animations on battery (set to 5 for slow-mode)
 
 # Optional customization
-CONFIG_ZMK_RGB_PLUS_HEATMAP_COOLING=90 # Cool down rate (percent per second)
-CONFIG_ZMK_RGB_PLUS_RAINBOW_ANGLE=45   # Traveling angle of the rainbow wave (degrees)
+CONFIG_ZMK_RGB_PLUS_HEATMAP_COOLING=90    # Cool down rate (percent per second)
+CONFIG_ZMK_RGB_PLUS_RAINBOW_ANGLE=45      # Traveling angle of the rainbow wave (degrees)
+CONFIG_ZMK_RGB_PLUS_RIPPLE_MAX_RADIUS=300 # Maximum travel distance for ripples (300 = 3 keys)
 ```
 
 ---
@@ -173,6 +174,7 @@ By default, the module distributes LEDs evenly around the outer perimeter of you
 | `CONFIG_ZMK_RGB_PLUS_FPS_BATTERY` | integer | `0` | Framerate (FPS) on battery. Set to `0` to deep-sleep. |
 | `CONFIG_ZMK_RGB_PLUS_RIPPLE_SPEED` | integer | `500` | Expansion velocity of key waves (hundredths of grid units/sec). |
 | `CONFIG_ZMK_RGB_PLUS_RIPPLE_LIFETIME` | integer | `800` | Ripple decay duration (in milliseconds). |
+| `CONFIG_ZMK_RGB_PLUS_RIPPLE_MAX_RADIUS` | integer | `300` | Ripple maximum travel distance (hundredths of grid units, e.g. 300 = 3 keys). |
 | `CONFIG_ZMK_RGB_PLUS_HEATMAP_COOLING` | integer | `90` | Thermal cooling rate percent per second (1-100). |
 | `CONFIG_ZMK_RGB_PLUS_RAINBOW_ANGLE` | integer | `45` | Directional rainbow wave angle in degrees (0-360). |
 | `CONFIG_ZMK_RGB_PLUS_DEFAULT_BRIGHTNESS` | integer | `80` | Default brightness scaling percentage (5-100). |
