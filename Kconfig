@@ -36,16 +36,16 @@ config ZMK_RGB_PLUS_AUTO_OFF_IDLE
 
 config ZMK_RGB_PLUS_FPS_USB
     int "Frame rate on USB power (FPS)"
-    default 40
-    range 10 100
+    default 60
+    range 0 60
     help
       The rendering frame rate when connected to USB power. Higher values
       provide smoother animations (e.g., 40-60 FPS).
 
 config ZMK_RGB_PLUS_FPS_BATTERY
     int "Frame rate on Battery power (FPS)"
-    default 0
-    range 0 30
+    default 30
+    range 0 60
     help
       The rendering frame rate when running on battery. Set to 0 to disable
       animations entirely and save maximum power when wireless.
