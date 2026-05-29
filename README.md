@@ -170,8 +170,8 @@ By default, the module distributes LEDs evenly around the outer perimeter of you
 | `CONFIG_ZMK_RGB_PLUS` | boolean | `n` | Master switch to enable advanced effects. |
 | `CONFIG_ZMK_RGB_PLUS_BATTERY_SAVER` | boolean | `y` | Enables framerate down-scaling on battery. |
 | `CONFIG_ZMK_RGB_PLUS_AUTO_OFF_IDLE` | boolean | `y` | Automatically turns off lights and suspends rendering when the keyboard goes idle. |
-| `CONFIG_ZMK_RGB_PLUS_FPS_USB` | integer | `40` | Framerate (FPS) when powered via USB (10-100). |
-| `CONFIG_ZMK_RGB_PLUS_FPS_BATTERY` | integer | `0` | Framerate (FPS) on battery. Set to `0` to deep-sleep. |
+| `CONFIG_ZMK_RGB_PLUS_FPS_USB` | integer | `60` | Framerate (FPS) when powered via USB (0-60). |
+| `CONFIG_ZMK_RGB_PLUS_FPS_BATTERY` | integer | `30` | Framerate (FPS) on battery (0-60). Set to `0` to deep-sleep. |
 | `CONFIG_ZMK_RGB_PLUS_RIPPLE_SPEED` | integer | `500` | Expansion velocity of key waves (hundredths of grid units/sec). |
 | `CONFIG_ZMK_RGB_PLUS_RIPPLE_LIFETIME` | integer | `800` | Ripple decay duration (in milliseconds). |
 | `CONFIG_ZMK_RGB_PLUS_RIPPLE_MAX_RADIUS` | integer | `300` | Ripple maximum travel distance (hundredths of grid units, e.g. 300 = 3 keys). |
