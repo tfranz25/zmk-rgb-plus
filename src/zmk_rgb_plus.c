@@ -335,8 +335,14 @@ static struct led_rgb render_fire(int i, int64_t time_ms) {
 }
 
 static struct led_rgb render_star(int i, int64_t time_ms) {
-    // Large prime numbers create stable pseudorandom offsets
-    uint32_t seed = i * 4923 + 7;
+    // Generate a stable, pseudorandom seed for each LED by hashing its index
+    uint32_t seed = (uint32_t)i;
+    seed = (seed ^ 61) ^ (seed >> 16);
+    seed *= 9;
+    seed = seed ^ (seed >> 4);
+    seed *= 0x27d4eb2d;
+    seed = seed ^ (seed >> 15);
+
     float period = 1000.0f + (float)(seed % 2000);
     float phase = (float)(seed % 5000);
     float speed_factor = (float)speed_multiplier / 100.0f;
@@ -364,8 +370,8 @@ static struct led_rgb render_rainbow(int i, int64_t time_ms) {
     float led_y = led_positions[i].y;
     float speed_factor = (float)speed_multiplier / 100.0f;
 
-    // Directional 45 degree angle
-    float angle = 45.0f * (M_PI / 180.0f);
+    // Directional travel angle configured via Kconfig
+    float angle = (float)CONFIG_ZMK_RGB_PLUS_RAINBOW_ANGLE * (M_PI / 180.0f);
     float coordinate_projection = led_x * cosf(angle) + led_y * sinf(angle);
 
     // Hue traverses space and time smoothly

@@ -6,8 +6,9 @@ A Standalone, Layout-Agnostic Advanced RGB Lighting Module for ZMK Keyboards.
 
 ---
 
-🤖 AI Disclosure
-This ZMK module was built with the assistance of AI tools. The code has been reviewed, tweaked, and tested on TibbyPad, but as with all AI-assisted firmware, please review the configurations before flashing it to your device.
+## 🤖 AI Disclosure
+
+This ZMK module was built with the assistance of AI tools. The code has been reviewed, tweaked, and tested on [TibbyPad](https://github.com/tfranz25/tibbypad-module), but as with all AI-assisted firmware, please review the configurations before flashing it to your device.
 
 ---
 
@@ -70,6 +71,10 @@ CONFIG_ZMK_RGB_PLUS=y
 CONFIG_ZMK_RGB_PLUS_BATTERY_SAVER=y
 CONFIG_ZMK_RGB_PLUS_FPS_USB=40
 CONFIG_ZMK_RGB_PLUS_FPS_BATTERY=0  # Disables animations on battery (set to 5 for slow-mode)
+
+# Optional customization
+CONFIG_ZMK_RGB_PLUS_HEATMAP_COOLING=90 # Cool down rate (percent per second)
+CONFIG_ZMK_RGB_PLUS_RAINBOW_ANGLE=45   # Traveling angle of the rainbow wave (degrees)
 ```
 
 ---
@@ -168,5 +173,6 @@ By default, the module distributes LEDs evenly around the outer perimeter of you
 | `CONFIG_ZMK_RGB_PLUS_FPS_BATTERY` | integer | `0` | Framerate (FPS) on battery. Set to `0` to deep-sleep. |
 | `CONFIG_ZMK_RGB_PLUS_RIPPLE_SPEED` | integer | `500` | Expansion velocity of key waves (hundredths of grid units/sec). |
 | `CONFIG_ZMK_RGB_PLUS_RIPPLE_LIFETIME` | integer | `800` | Ripple decay duration (in milliseconds). |
-| `CONFIG_ZMK_RGB_PLUS_HEATMAP_COOLING` | integer | `60` | Thermal cooling rate percent per second (1-100). |
+| `CONFIG_ZMK_RGB_PLUS_HEATMAP_COOLING` | integer | `90` | Thermal cooling rate percent per second (1-100). |
+| `CONFIG_ZMK_RGB_PLUS_RAINBOW_ANGLE` | integer | `45` | Directional rainbow wave angle in degrees (0-360). |
 | `CONFIG_ZMK_RGB_PLUS_DEFAULT_BRIGHTNESS` | integer | `80` | Default brightness scaling percentage (5-100). |
