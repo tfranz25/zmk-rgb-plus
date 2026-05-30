@@ -491,7 +491,12 @@ static void render_frame(void) {
                 float hue = 250.0f - (led_heat * 250.0f); // scales 250 (blue) down to 0 (red)
                 float sat = 1.0f;
                 float max_v = (float)CONFIG_ZMK_RGB_PLUS_DEFAULT_BRIGHTNESS / 100.0f;
-                float val = max_v * (0.15f + led_heat * 0.85f);
+                float val;
+                if (IS_ENABLED(CONFIG_ZMK_RGB_PLUS_HEATMAP_OFF_BASE)) {
+                    val = max_v * led_heat;
+                } else {
+                    val = max_v * (0.15f + led_heat * 0.85f);
+                }
 
                 base_color = hsv_to_rgb(hue, sat, val);
                 break;

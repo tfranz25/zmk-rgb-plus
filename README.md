@@ -176,5 +176,6 @@ By default, the module distributes LEDs evenly around the outer perimeter of you
 | `CONFIG_ZMK_RGB_PLUS_RIPPLE_LIFETIME` | integer | `800` | Ripple decay duration (in milliseconds). |
 | `CONFIG_ZMK_RGB_PLUS_RIPPLE_MAX_RADIUS` | integer | `300` | Ripple maximum travel distance (hundredths of grid units, e.g. 300 = 3 keys). |
 | `CONFIG_ZMK_RGB_PLUS_HEATMAP_COOLING` | integer | `90` | Thermal cooling rate percent per second (1-100). |
+| `CONFIG_ZMK_RGB_PLUS_HEATMAP_OFF_BASE` | boolean | `n` | Heatmap starts off (black) instead of dim blue/purple. |
 | `CONFIG_ZMK_RGB_PLUS_RAINBOW_ANGLE` | integer | `45` | Directional rainbow wave angle in degrees (0-360). |
 | `CONFIG_ZMK_RGB_PLUS_DEFAULT_BRIGHTNESS` | integer | `80` | Default brightness scaling percentage (5-100). |

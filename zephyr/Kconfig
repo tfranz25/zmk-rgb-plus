@@ -62,6 +62,13 @@ config ZMK_RGB_PLUS_HEATMAP_COOLING
       How quickly typed keys cool down back to the background color.
       Higher values mean faster cooling.
 
+config ZMK_RGB_PLUS_HEATMAP_OFF_BASE
+    bool "Heatmap starts off (black) instead of dim blue/purple"
+    default n
+    help
+      When enabled, keys with no heat will be completely off. As heat
+      increases, they will light up and transition towards red.
+
 config ZMK_RGB_PLUS_RAINBOW_ANGLE
     int "Rainbow wave travel angle (degrees)"
     default 45
