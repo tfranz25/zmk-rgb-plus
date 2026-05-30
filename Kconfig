@@ -81,7 +81,7 @@ config ZMK_RGB_PLUS_HEATMAP_COOLING
 
 config ZMK_RGB_PLUS_HEATMAP_OFF_BASE
     bool "Heatmap starts off (black) instead of dim blue/purple"
-    default n
+    default y
     help
       When enabled, keys with no heat will be completely off. As heat
       increases, they will light up and transition towards red.
